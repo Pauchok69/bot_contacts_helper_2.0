@@ -46,3 +46,17 @@ class AddressBook(UserDict):
 
     def get_record(self, name):
         return self.data.get(name)
+
+    def remove_record(self, name):
+        del self.data[name]
+
+    def search(self, value):
+        if self.has_record(value):
+            return self.get_record(value)
+
+        for record in self.get_all_records().values():
+            for phone in record.phones:
+                if phone.value == value:
+                    return record
+
+        raise ValueError('Record with current value does not found')
