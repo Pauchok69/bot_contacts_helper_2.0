@@ -51,26 +51,37 @@ def add_func(data):
     :param data: Строка з ім'ям та телефоном.
     :return: Відповідь, що контакт створено.
     """
-    name, phone = create_data(data)
+    name, phones = create_data(data)
 
     if name in contacts_dict:
         raise ValueError('This contact already exist.')
-    record = Record(name, phone)
+    record = Record(name)
+
+    for phone in phones:
+        record.add_phone(phone)
+
     contacts_dict.add_record(record)
-    return f'You added new contact: {name} with this {phone}.'
+
+    return f'You added new contact: {name} with this {phones}.'
 
 
 @input_error
-def change_func(data):
+def change_phones_func(data):
     """
     Зміна вже існуючого контактного номера.
     :param data: Строка з ім'ям та телефоном.
     :return: Відповідь про зміни.
     """
-    name, phone = create_data(data)
-    if name in contacts_dict:
-        contacts_dict[name] = phone
-        return f'You changed number to {phone} for {name}.'
+    name, phones = create_data(data)
+
+    if contacts_dict.has_record(name):
+        record = contacts_dict.get_record(name)
+        record.clear_phones()
+
+        for phone in phones:
+            record.add_phone(phone)
+
+        return f'You changed numbers to {phones} for {name}.'
     return 'Use add command plz.'
 
 
@@ -106,7 +117,7 @@ COMMANDS_DICT = {
     'close': exit_func,
     'good bye': exit_func,
     'add': add_func,
-    'change': change_func,
+    'change phones': change_phones_func,
     'show all': show_func,
     'phone': search_func
 }
@@ -139,12 +150,15 @@ def create_data(data):
     """
     new_data = data.strip().split(" ")
     name = new_data[0]
-    phone = new_data[1]
+    phones = new_data[1:]
+
     if name.isnumeric():
         raise ValueError('Wrong name.')
-    if not phone.isnumeric():
-        raise ValueError('Wrong phone.')
-    return name, phone
+
+    for phone in phones:
+        if not phone.isnumeric():
+            raise ValueError('Wrong phone.')
+    return name, phones
 
 
 def break_func():
