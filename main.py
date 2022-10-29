@@ -106,13 +106,9 @@ def show_func():
 @input_error
 def del_func(name):
     name = name.strip()
+    contacts_dict.remove_record(name)
 
-    if contacts_dict.has_record(name):
-        contacts_dict.remove_record(name)
-
-        return f'The record with name: {name} is deleted'
-
-    raise ValueError(f'The record with name: {name} is not found')
+    return f'The record with name: {name} is deleted'
 
 
 @input_error
