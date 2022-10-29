@@ -30,8 +30,19 @@ class Record:
     def add_phone(self, phone):
         self.phones.append(Phone(phone))
 
-    def clear_phones(self):
-        self.phones = []
+    def delete_phone(self, phone):
+        for record_phone in self.phones:
+            if record_phone.value == phone:
+                self.phones.remove(record_phone)
+                return True
+        return False
+
+    def change_phones(self, phones):
+        for phone in phones:
+            if not self.delete_phone(phone):
+                self.add_phone(phone)
+
+
 
 
 class AddressBook(UserDict):
